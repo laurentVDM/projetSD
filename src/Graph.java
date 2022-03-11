@@ -6,12 +6,14 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Graph {
 
   // aeroports : Iata, name, city, country, longitude, latitude
   // vols : company name, source airport iata, destination airport iata
   private HashMap<String, Airport> airportWithIata = new HashMap<>();
+  private HashMap<Airport, Set<Flight>> arcsSortants = new HashMap<>();
   private HashSet<Airport> airports = new HashSet<>();
   private ArrayList<Flight> flights = new ArrayList<>();
 
@@ -45,6 +47,11 @@ public class Graph {
         f.setSourceIata(attributesFile2[1]);
         f.setDestinationIata(attributesFile2[2]);
         flights.add(f);
+        Airport a = airportWithIata.get(f.getSourceIata());
+        if (arcsSortants.get(a).isEmpty()) {
+          arcsSortants.put(a, new HashSet<>());
+        }
+        arcsSortants.get(a).add(f);
       }
     } catch (IOException e) {
       e.getMessage();
@@ -55,6 +62,7 @@ public class Graph {
     // Breadth-First search
     boolean foundRoute = false;
     ArrayDeque<String> file = new ArrayDeque<>();
+    HashMap<String, Flight> historiqueVols = new HashMap<>();
     file.add(sourceIata);
     String actual;
     while (!foundRoute && !file.isEmpty()) {
@@ -69,7 +77,6 @@ public class Graph {
         }
       }
     }
-    System.out.println(foundRoute);
   }
 
   public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
