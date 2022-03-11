@@ -1,4 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -11,12 +15,21 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public abstract class Graph {
+public class Graph {
 
-	protected Map<String, Airport> correspondanceIataAirport ;
+	// aeroports : Iata, name, city, country, longitude, latitude
 
-	public Graph()  {
-		correspondanceIataAirport= new HashMap<String, Airport>();
+	public Graph(File file1, File file2)  {
+		try {
+			String currentLine;
+			BufferedReader reader = new BufferedReader(new FileReader(file1));
+
+			while((currentLine = reader.readLine()) != null) {
+
+			}
+		} catch(IOException e) {
+			e.getMessage();
+		}
 	}
 	
 	public void constructFromXML (String xmlFile)throws Exception {
@@ -50,18 +63,13 @@ public abstract class Graph {
 			}
 		}
 	}
-	
-	public Airport getAirport(String iata) {
-		return correspondanceIataAirport.get(iata);
+
+	public void calculerItineraireMinimisantNombreVols() {
+
 	}
 
-	protected void calculerItineraireMinimisantNombreVols();
+	public void calculerItineraireMinimisantDistance() {
 
-	protected void calculerItineraireMinimisantDistance();
-	
-	public abstract Set<Flight> arcsSortants(Airport a);
-
-	public abstract boolean sontAdjacents(Airport a1, Airport a2);
-	
+	}
 
 }
