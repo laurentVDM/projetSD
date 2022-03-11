@@ -4,22 +4,31 @@ public class Flight {
   private String sourceIata;
   private String destinationIata;
 
-  public Flight(String companyName, String sourceIata, String destinationIata) {
-    this.companyName = companyName;
-    this.sourceIata = sourceIata;
-    this.destinationIata = destinationIata;
+  public Flight() {
   }
 
   public String getCompanyName() {
     return companyName;
   }
 
+  public void setCompanyName(String companyName) {
+    this.companyName = companyName;
+  }
+
   public String getSourceIata() {
     return sourceIata;
   }
 
+  public void setSourceIata(String sourceIata) {
+    this.sourceIata = sourceIata;
+  }
+
   public String getDestinationIata() {
     return destinationIata;
+  }
+
+  public void setDestinationIata(String destinationIata) {
+    this.destinationIata = destinationIata;
   }
 
   @Override

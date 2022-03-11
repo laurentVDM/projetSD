@@ -6,41 +6,58 @@ public class Airport {
   private String name;
   private String city;
   private String country;
-  private long longitude;
-  private long latitude;
+  private double longitude;
+  private double latitude;
 
-  public Airport(String iata, String name, String city, String country, long longitude,
-      long latitude) {
-    this.iata = iata;
-    this.name = name;
-    this.city = city;
-    this.country = country;
-    this.longitude = longitude;
-    this.latitude = latitude;
+  public Airport() {
   }
 
   public String getIata() {
     return iata;
   }
 
+  public void setIata(String iata) {
+    this.iata = iata;
+  }
+
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getCity() {
     return city;
   }
 
+  public void setCity(String city) {
+    this.city = city;
+  }
+
   public String getCountry() {
     return country;
   }
 
-  public long getLongitude() {
+  public void setCountry(String country) {
+    this.country = country;
+  }
+
+  public double getLongitude() {
     return longitude;
   }
 
-  public long getLatitude() {
+  public void setLongitude(double longitude) {
+    this.longitude = longitude;
+  }
+
+  public double getLatitude() {
     return latitude;
+  }
+
+  public void setLatitude(double latitude) {
+    this.latitude = latitude;
   }
 
   @Override
