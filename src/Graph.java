@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +52,24 @@ public class Graph {
   }
 
   public void calculerItineraireMinimisantNombreVol(String sourceIata, String destinationIata) {
-    Airport sourceAirport = airportWithIata.get(sourceIata);
+    // Breadth-First search
+    boolean foundRoute = false;
+    ArrayDeque<String> file = new ArrayDeque<>();
+    file.add(sourceIata);
+    String actual;
+    while (!foundRoute && !file.isEmpty()) {
+      actual = file.pollFirst();
+      for (Flight f : flights) {
+        if (f.getSourceIata().equals(actual)) {
+          if (f.getDestinationIata().equals(destinationIata)) {
+            foundRoute = true;
+          } else if (!file.contains(f.getDestinationIata())) {
+            file.add(f.getDestinationIata());
+          }
+        }
+      }
+    }
+    System.out.println(foundRoute);
   }
 
   public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
