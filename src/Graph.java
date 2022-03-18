@@ -110,6 +110,12 @@ public class Graph {
 
   public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
     //algo du plus court chemin
+    HashMap<String,Double> tempo = new HashMap<>();
+    HashMap<String, Double> definitive = new HashMap<>();
+    Airport sourceAirport = airportWithIata.get(sourceIata);
+    Airport destinationAirport = airportWithIata.get(destinationIata);
+
+    //hashmap.get(sourcedepart)
   }
 
 }
