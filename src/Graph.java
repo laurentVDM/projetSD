@@ -155,7 +155,6 @@ public class Graph {
             tempo.put(airportWithIata.get(flight.getDestinationIata()), definitive.get(minimumTempo) + distance);
         }
       }
-
       //suppression dans la table tempo
       tempo.remove(minimumTempo);
     }
