@@ -38,6 +38,7 @@ public class Graph {
         a.setLatitude(Double.parseDouble(attributesFile1[5]));
         airportWithIata.put(a.getIata(), a);
         airports.add(a);
+        arcsSortants.put(a, new HashSet<>());
       }
 
       while ((currentLineFile2 = readerFile2.readLine()) != null) {
@@ -48,9 +49,6 @@ public class Graph {
         f.setDestinationIata(attributesFile2[2]);
         flights.add(f);
         Airport a = airportWithIata.get(f.getSourceIata());
-        if (arcsSortants.get(a).isEmpty()) {
-          arcsSortants.put(a, new HashSet<>());
-        }
         arcsSortants.get(a).add(f);
       }
     } catch (IOException e) {
@@ -60,22 +58,53 @@ public class Graph {
 
   public void calculerItineraireMinimisantNombreVol(String sourceIata, String destinationIata) {
     // Breadth-First search
-    boolean foundRoute = false;
+    boolean foundRoute = (sourceIata == destinationIata);
+
     ArrayDeque<String> file = new ArrayDeque<>();
-    HashMap<String, Flight> historiqueVols = new HashMap<>();
     file.add(sourceIata);
-    String actual;
+
+    HashMap<Airport, Flight> flightsHistory = new HashMap<>();
+    HashSet<Airport> allVisitedAirports = new HashSet<>();
+    allVisitedAirports.add(airportWithIata.get(sourceIata));
+
     while (!foundRoute && !file.isEmpty()) {
-      actual = file.pollFirst();
-      for (Flight f : flights) {
-        if (f.getSourceIata().equals(actual)) {
-          if (f.getDestinationIata().equals(destinationIata)) {
-            foundRoute = true;
-          } else if (!file.contains(f.getDestinationIata())) {
-            file.add(f.getDestinationIata());
-          }
+      String actualIata = file.pollFirst();
+      Airport actualAirport = airportWithIata.get(actualIata);
+      for (Flight f : arcsSortants.get(actualAirport)) {
+        if (!allVisitedAirports.contains(airportWithIata.get(f.getDestinationIata()))) {
+          flightsHistory.put(airportWithIata.get(f.getDestinationIata()), f);
+          file.add(f.getDestinationIata());
+          allVisitedAirports.add(airportWithIata.get(f.getDestinationIata()));
         }
+        foundRoute = f.getDestinationIata().equals(destinationIata);
       }
+    }
+
+    if (!foundRoute) {
+      throw new IllegalArgumentException();
+    }
+
+    double distanceTotal = 0;
+    Airport actualAirport = airportWithIata.get(destinationIata);
+    boolean isPrinted = false;
+    ArrayList<Flight> usedFlights = new ArrayList<>();
+    while (!isPrinted) {
+      Flight f = flightsHistory.get(actualAirport);
+      Airport sourceAirport = airportWithIata.get(f.getSourceIata());
+      Airport destAirport = airportWithIata.get(f.getDestinationIata());
+      double distance = Util.distance(sourceAirport.getLatitude(), sourceAirport.getLongitude(),
+          destAirport.getLatitude(), destAirport.getLongitude());
+      f.setDistance(distance);
+      distanceTotal += distance;
+      usedFlights.add(f);
+      isPrinted = f.getSourceIata().equals(sourceIata);
+      actualAirport = airportWithIata.get(f.getSourceIata());
+    }
+
+    System.out.println("distance : " + distanceTotal);
+    for (int i = usedFlights.size() - 1; i > -1; i--) {
+      Flight f = usedFlights.get(i);
+      System.out.println(f);
     }
   }
 
