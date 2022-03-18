@@ -86,9 +86,9 @@ public class Graph {
 
     double distanceTotal = 0;
     Airport actualAirport = airportWithIata.get(destinationIata);
-    boolean isPrinted = false;
+    boolean isFinished = false;
     ArrayList<Flight> usedFlights = new ArrayList<>();
-    while (!isPrinted) {
+    while (!isFinished) {
       Flight f = flightsHistory.get(actualAirport);
       Airport sourceAirport = airportWithIata.get(f.getSourceIata());
       Airport destAirport = airportWithIata.get(f.getDestinationIata());
@@ -97,7 +97,7 @@ public class Graph {
       f.setDistance(distance);
       distanceTotal += distance;
       usedFlights.add(f);
-      isPrinted = f.getSourceIata().equals(sourceIata);
+      isFinished = f.getSourceIata().equals(sourceIata);
       actualAirport = airportWithIata.get(f.getSourceIata());
     }
 
@@ -110,7 +110,7 @@ public class Graph {
 
   public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
     //algo du plus court chemin
-    HashMap<String,Double> tempo = new HashMap<>();
+    HashMap<String, Double> tempo = new HashMap<>();
     HashMap<String, Double> definitive = new HashMap<>();
     Airport sourceAirport = airportWithIata.get(sourceIata);
     Airport destinationAirport = airportWithIata.get(destinationIata);
