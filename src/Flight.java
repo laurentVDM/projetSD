@@ -3,6 +3,7 @@ public class Flight {
   private String companyName;
   private String sourceIata;
   private String destinationIata;
+  private double distance;
 
   public Flight() {
   }
@@ -31,9 +32,18 @@ public class Flight {
     this.destinationIata = destinationIata;
   }
 
+  public double getDistance() {
+    return distance;
+  }
+
+  public void setDistance(double distance) {
+    this.distance = distance;
+  }
+
   @Override
   public String toString() {
     return "Flight{" + "companyName='" + companyName + '\'' + ", sourceIata='" + sourceIata + '\''
-        + ", destinationIata='" + destinationIata + '\'' + '}';
+        + ", destinationIata='" + destinationIata + '\'' + ", distance='" + distance
+        + '\'' + '}';
   }
 }
