@@ -86,9 +86,9 @@ public class Graph {
 
     double distanceTotal = 0;
     Airport actualAirport = airportWithIata.get(destinationIata);
-    boolean isPrinted = false;
+    boolean isFinished = false;
     ArrayList<Flight> usedFlights = new ArrayList<>();
-    while (!isPrinted) {
+    while (!isFinished) {
       Flight f = flightsHistory.get(actualAirport);
       Airport sourceAirport = airportWithIata.get(f.getSourceIata());
       Airport destAirport = airportWithIata.get(f.getDestinationIata());
@@ -97,7 +97,7 @@ public class Graph {
       f.setDistance(distance);
       distanceTotal += distance;
       usedFlights.add(f);
-      isPrinted = f.getSourceIata().equals(sourceIata);
+      isFinished = f.getSourceIata().equals(sourceIata);
       actualAirport = airportWithIata.get(f.getSourceIata());
     }
 
@@ -110,49 +110,51 @@ public class Graph {
 
   public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
     //algo du plus court chemin
-    if(sourceIata.equals(destinationIata)) {
+    if (sourceIata.equals(destinationIata)) {
       System.out.println("Meme endroit");
       return;
     }
 
-    HashMap<Airport,Double> tempo = new HashMap<Airport,Double>();
+    HashMap<Airport, Double> tempo = new HashMap<Airport, Double>();
     HashMap<Airport, Double> definitive = new HashMap<>();
     ArrayList<Airport> visités = new ArrayList<Airport>();
     Airport sourceAirport = airportWithIata.get(sourceIata);
     Airport destinationAirport = airportWithIata.get(destinationIata);
 
-    tempo.put(sourceAirport,null);
-    definitive.put(sourceAirport,0.0);
+    tempo.put(sourceAirport, null);
+    definitive.put(sourceAirport, 0.0);
     visités.add(sourceAirport);
-    for(Flight flight : arcsSortants.get(sourceAirport)){
-      double dist = Util.distance( sourceAirport.getLatitude(),sourceAirport.getLongitude(),
-              airportWithIata.get(flight.getDestinationIata()).getLatitude(),
-              airportWithIata.get(flight.getDestinationIata()).getLongitude());
+    for (Flight flight : arcsSortants.get(sourceAirport)) {
+      double dist = Util.distance(sourceAirport.getLatitude(), sourceAirport.getLongitude(),
+          airportWithIata.get(flight.getDestinationIata()).getLatitude(),
+          airportWithIata.get(flight.getDestinationIata()).getLongitude());
       tempo.put(airportWithIata.get(destinationIata), dist);
     }
 
     //tant que la ville de destination finale n'a pas été remplie dans le hashmap definitif on cherche
-    while(definitive.get(destinationAirport)==null){
+    while (definitive.get(destinationAirport) == null) {
       Airport minimumTempo = null;
       double distTemp = 0;
-      for(Airport a : tempo.keySet()){
+      for (Airport a : tempo.keySet()) {
         double min = 99999;
-        if(tempo.get(a)<min) {
+        if (tempo.get(a) < min) {
           min = tempo.get(a);
           minimumTempo = a;
           distTemp = tempo.get(a);
         }
       }
       //ajout dans la table definitive
-      definitive.put(minimumTempo,distTemp);
+      definitive.put(minimumTempo, distTemp);
 
-      for(Flight flight : arcsSortants.get(minimumTempo)){
-        if(!visités.contains(flight.getDestinationIata())) {
+      for (Flight flight : arcsSortants.get(minimumTempo)) {
+        if (!visités.contains(flight.getDestinationIata())) {
           double distance = Util.distance(minimumTempo.getLatitude(), minimumTempo.getLongitude(),
-                  airportWithIata.get(flight.getDestinationIata()).getLatitude(),
-                  airportWithIata.get(flight.getDestinationIata()).getLongitude());
-          if (tempo.get(flight.getDestinationIata()) > definitive.get(minimumTempo) + distance)
-            tempo.put(airportWithIata.get(flight.getDestinationIata()), definitive.get(minimumTempo) + distance);
+              airportWithIata.get(flight.getDestinationIata()).getLatitude(),
+              airportWithIata.get(flight.getDestinationIata()).getLongitude());
+          if (tempo.get(flight.getDestinationIata()) > definitive.get(minimumTempo) + distance) {
+            tempo.put(airportWithIata.get(flight.getDestinationIata()),
+                definitive.get(minimumTempo) + distance);
+          }
         }
       }
       //suppression dans la table tempo
