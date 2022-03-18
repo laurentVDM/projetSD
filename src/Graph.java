@@ -104,7 +104,11 @@ public class Graph {
     System.out.println("distance : " + distanceTotal);
     for (int i = usedFlights.size() - 1; i > -1; i--) {
       Flight f = usedFlights.get(i);
-      System.out.println(f);
+      System.out.println(
+          "Vol [source=" + airportWithIata.get(f.getSourceIata()).getName() +
+              ", destination=" + airportWithIata.get(f.getDestinationIata()).getName() +
+              ", airline=" + f.getCompanyName() +
+              ", distance=" + f.getDistance() + "]");
     }
   }
 
