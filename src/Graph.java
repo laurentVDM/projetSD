@@ -144,12 +144,19 @@ public class Graph {
         System.out.println("sourceVol "+sourcevol);
         System.out.println("destintionVol "+destinationvol);
 
-        while(!vols.contains(sourceAirport)){
-            vols.add(f);
+        while(!vols.contains(sourceAirport)){           //probleme boucle vide, il faut retenir le vol pour la destinaion
+            if(!vols.contains(f)) {
+                vols.add(f);
+                    System.out.println(vols);
+            }
+
             destinationvol = sourcevol;
             f=visites.get(destinationvol);
+                    System.out.println("------");
+                    System.out.println(f);
             sourcevol = airportWithIata.get(f.getSourceIata());
-
+                    System.out.println(sourcevol);
+                    System.out.println(destinationvol);
         }
 
         System.out.println("dist tot:" + definitive.get(destinationAirport));
