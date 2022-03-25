@@ -113,59 +113,44 @@ public class Graph {
     }
 
     public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
-        //algo du plus court chemin
-        System.out.println("destination est " + destinationIata);
-        System.out.println("source est " + sourceIata);
-        if (sourceIata.equals(destinationIata)) {
-            System.out.println("Meme endroit");
-            return;
-        }
-        //variables
+
         HashMap<Airport, Double> tempo = new HashMap<Airport, Double>();
         HashMap<Airport, Double> definitive = new HashMap<>();
         Airport sourceAirport = airportWithIata.get(sourceIata);
         Airport destinationAirport = airportWithIata.get(destinationIata);
 
-        //on ajoute la source
-        tempo.put(sourceAirport, 0.0);
         definitive.put(sourceAirport, 0.0);
+        tempo.put(sourceAirport,0.0);
         Airport minimumTempo = sourceAirport;
-        double megaDistance = 0.0;
 
-        //tant que la ville de destination finale n'a pas été remplie dans le hashmap definitif on cherche
-        while (definitive.get(destinationAirport) == null|| definitive.size()!=tempo.size()) {
-            //on ajoute les vols qui partent depuis l'aeroport de depart dans la table tempo avec la distance
+        while (!definitive.containsKey(destinationAirport)/*tempo.size() != definitive.size()*/) {
             for (Flight flight : arcsSortants.get(minimumTempo)) {
-                System.out.println("debut boucle_____________________________");
-                //plus  lisible
-                Airport destinationFlightAirport = airportWithIata.get(flight.getDestinationIata());
-                Airport sourceFlightAirport = airportWithIata.get(flight.getSourceIata());
+                System.out.println("remplissage tempo");
+                if(definitive.containsKey(flight.getDestinationIata())) {
+                    System.out.println("contient deja dansdefinitive");
+                    break;
+                }
+                Airport flightDestination = airportWithIata.get(flight.getDestinationIata());
+                Airport flightSource = airportWithIata.get(flight.getSourceIata());
                 double dist = Util.distance(minimumTempo.getLatitude(), minimumTempo.getLongitude(),
-                        sourceFlightAirport.getLatitude(), destinationFlightAirport.getLongitude());
+                        flightSource.getLatitude(), flightDestination.getLongitude());
 
-                if (definitive.get(destinationFlightAirport)==null) {
-                    if (tempo.get(destinationFlightAirport) == null) {      //pas encore de valeur dans tempo
-                        System.out.println("la valeur dans tempo est vide tempo");
+                if (tempo.get(flightDestination) == null) {      //pas encore de valeur dans tempo
+                    flight.setDistance(dist);
+                    tempo.put(flightDestination, dist);
+
+                } else {
+                    if (tempo.get(flightDestination) > dist + definitive.get(flightSource)) {     //distance doit etre remplacee
                         flight.setDistance(dist);
-                        System.out.println("flight: " + flight);
-                        tempo.put(destinationFlightAirport, dist);
-
-                    } else {
-                        System.out.println("distance deja dans tempo " + tempo.get(destinationFlightAirport));
-                        if (tempo.get(destinationFlightAirport) > dist + definitive.get(sourceFlightAirport)) {     //distance doitetre remplacee
-                            System.out.println("Nouvelle distance :");
-                            flight.setDistance(dist);
-                            tempo.put(destinationFlightAirport, dist);
-                        }
-                        System.out.println("tempo " + tempo);
-                        System.out.println("distance " + dist);
+                        tempo.put(flightDestination, dist);
                     }
                 }
             }
+            //trouver le minimum prochain
+            System.out.println("recherche min");
             double distTemp = 0;
             double min = 99999;
-            System.out.println("tempo: " + tempo);
-            System.out.println("---------------------");
+
             for (Airport a : tempo.keySet()) {
                 double t = tempo.get(a);
                 if (t != 0) {
@@ -176,17 +161,16 @@ public class Graph {
                     }
                 }
             }
-
             definitive.put(minimumTempo, distTemp);
-
-            //visités.add(minimumTempo);
             tempo.remove(minimumTempo);
             System.out.println("distTemp " + distTemp);
             System.out.println("definitive " + definitive);
+            System.out.println("tempo "+tempo);
             //return;
+
         }
         System.out.println("dist tot:" + definitive.get(destinationAirport));
-    }
+        return;
     /*
     for (int i = usedFlights.size() - 1; i > -1; i--) {
       Flight f = usedFlights.get(i);
@@ -197,5 +181,7 @@ public class Graph {
                       ", distance=" + f.getDistance() + "]");
     }
      */
+
+    }
 
 }
