@@ -102,14 +102,8 @@ public class Graph {
         }
 
         System.out.println("distance : " + distanceTotal);
-        for (int i = usedFlights.size() - 1; i > -1; i--) {
-            Flight f = usedFlights.get(i);
-            System.out.println(
-                    "Vol [source=" + airportWithIata.get(f.getSourceIata()).getName() +
-                            ", destination=" + airportWithIata.get(f.getDestinationIata()).getName() +
-                            ", airline=" + f.getCompanyName() +
-                            ", distance=" + f.getDistance() + "]");
-        }
+
+        afficher(usedFlights);
     }
 
     public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
@@ -133,7 +127,7 @@ public class Graph {
                 Airport flightDestination = airportWithIata.get(flight.getDestinationIata());
                 Airport flightSource = airportWithIata.get(flight.getSourceIata());
                 double dist = Util.distance(minimumTempo.getLatitude(), minimumTempo.getLongitude(),
-                        flightSource.getLatitude(), flightDestination.getLongitude());
+                        flightDestination.getLatitude(), flightDestination.getLongitude());
 
                 if (tempo.get(flightDestination) == null) {      //pas encore de valeur dans tempo
                     flight.setDistance(dist);
@@ -149,15 +143,15 @@ public class Graph {
             //trouver le minimum prochain
             System.out.println("recherche min");
             double distTemp = 0;
-            double min = 99999;
+            double min = Double.MAX_VALUE;
 
             for (Airport a : tempo.keySet()) {
                 double t = tempo.get(a);
                 if (t != 0) {
                     if (t < min) {
-                        min = tempo.get(a);
+                        min = t;
                         minimumTempo = a;
-                        distTemp = tempo.get(a);
+                        distTemp = t;
                     }
                 }
             }
@@ -182,6 +176,17 @@ public class Graph {
     }
      */
 
+    }
+
+    private void afficher(ArrayList<Flight> usedFlights) {
+        for (int i = usedFlights.size() - 1; i > -1; i--) {
+            Flight f = usedFlights.get(i);
+            System.out.println(
+                "Vol [source=" + airportWithIata.get(f.getSourceIata()).getName() +
+                    ", destination=" + airportWithIata.get(f.getDestinationIata()).getName() +
+                    ", airline=" + f.getCompanyName() +
+                    ", distance=" + f.getDistance() + "]");
+        }
     }
 
 }
