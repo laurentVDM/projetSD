@@ -48,8 +48,11 @@ public class Graph {
                 f.setSourceIata(attributesFile2[1]);
                 f.setDestinationIata(attributesFile2[2]);
                 flights.add(f);
-                Airport a = airportWithIata.get(f.getSourceIata());
-                arcsSortants.get(a).add(f);
+                Airport aSource = airportWithIata.get(f.getSourceIata());
+                Airport aDest = airportWithIata.get(f.getDestinationIata());
+                f.setDistance(Util.distance(aSource.getLatitude(), aSource.getLongitude(),
+                    aDest.getLatitude(), aDest.getLongitude()));
+                arcsSortants.get(aSource).add(f);
             }
         } catch (IOException e) {
             e.getMessage();
@@ -90,12 +93,7 @@ public class Graph {
         ArrayList<Flight> usedFlights = new ArrayList<>();
         while (!isFinished) {
             Flight f = flightsHistory.get(actualAirport);
-            Airport sourceAirport = airportWithIata.get(f.getSourceIata());
-            Airport destAirport = airportWithIata.get(f.getDestinationIata());
-            double distance = Util.distance(sourceAirport.getLatitude(), sourceAirport.getLongitude(),
-                    destAirport.getLatitude(), destAirport.getLongitude());
-            f.setDistance(distance);
-            distanceTotal += distance;
+            distanceTotal += f.getDistance();
             usedFlights.add(f);
             isFinished = f.getSourceIata().equals(sourceIata);
             actualAirport = airportWithIata.get(f.getSourceIata());
