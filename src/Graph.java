@@ -2,11 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
 
@@ -107,7 +103,8 @@ public class Graph {
     public void calculerItineraireMinimisantDistance(String sourceIata, String destinationIata) {
         HashMap<Airport, Double> tempo = new HashMap<>();
         HashMap<Airport, Double> definitive = new HashMap<>();
-        ArrayList<Flight> volsUtilisés = new ArrayList<>();
+        HashMap<Airport,Flight> visites = new HashMap<>();
+        ArrayList<Flight> vols = new ArrayList<>();
 
         Airport sourceAirport = airportWithIata.get(sourceIata);
         Airport destinationAirport = airportWithIata.get(destinationIata);
@@ -115,22 +112,15 @@ public class Graph {
         tempo.put(sourceAirport, 0.0);
 
         while (!definitive.containsKey(destinationAirport) && !tempo.isEmpty()) {
-            Airport minimumTempo = sourceAirport;
-            double min = Double.MAX_VALUE;
+            Airport minimumTempo = tempo.keySet().stream().min(Comparator.comparing(m -> tempo.get(m))).get();
+            double min = tempo.get(minimumTempo);
 
-            for (Airport a : tempo.keySet()) {
-                double t = tempo.get(a);
-                if (t < min) {
-                    min = tempo.get(a);
-                    minimumTempo = a;
-                }
-            }
             definitive.put(minimumTempo, min);
             tempo.remove(minimumTempo);
 
             for (Flight flight : arcsSortants.get(minimumTempo)) {
-                //System.out.println("remplissage tempo");
                 String iata = flight.getDestinationIata();
+                visites.put(airportWithIata.get(flight.getDestinationIata()),flight);
                 if (definitive.containsKey(airportWithIata.get(iata))) {
 
                 } else {
@@ -143,6 +133,25 @@ public class Graph {
                 }
             }
         }
+        System.out.println("visites "+visites);
+        System.out.println("vol "+visites.get(destinationAirport));
+        Flight f =visites.get(destinationAirport);      //le vol qui arrive a la destination
+
+        System.out.println("--------------");
+        System.out.println("f " +f);
+        Airport sourcevol = airportWithIata.get(f.getSourceIata());
+        Airport destinationvol = airportWithIata.get(f.getDestinationIata());
+        System.out.println("sourceVol "+sourcevol);
+        System.out.println("destintionVol "+destinationvol);
+
+        while(!vols.contains(sourceAirport)){
+            vols.add(f);
+            destinationvol = sourcevol;
+            f=visites.get(destinationvol);
+            sourcevol = airportWithIata.get(f.getSourceIata());
+
+        }
+
         System.out.println("dist tot:" + definitive.get(destinationAirport));
 
 
