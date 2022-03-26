@@ -109,6 +109,9 @@ public class Graph {
         Airport sourceAirport = airportWithIata.get(sourceIata);
         Airport destinationAirport = airportWithIata.get(destinationIata);
 
+        if(sourceAirport.equals(destinationAirport))
+            throw new IllegalArgumentException("meme aeroport");
+
         tempo.put(sourceAirport, 0.0);
 
         while (!definitive.containsKey(destinationAirport) && !tempo.isEmpty()) {
@@ -133,8 +136,7 @@ public class Graph {
                 }
             }
         }
-        System.out.println("visites "+visites);
-        System.out.println("vol "+visites.get(destinationAirport));
+        System.out.println("dist tot:" + definitive.get(destinationAirport));
         Flight f =visites.get(destinationAirport);      //le vol qui arrive a la destination
 
         System.out.println("--------------");
@@ -147,21 +149,16 @@ public class Graph {
         while(!vols.contains(sourceAirport)){           //probleme boucle vide, il faut retenir le vol pour la destinaion
             if(!vols.contains(f)) {
                 vols.add(f);
-                    System.out.println(vols);
+                System.out.println(vols);
             }
-
             destinationvol = sourcevol;
             f=visites.get(destinationvol);
-                    System.out.println("------");
-                    System.out.println(f);
+            //System.out.println("------");
+            //System.out.println(f);
             sourcevol = airportWithIata.get(f.getSourceIata());
-                    System.out.println(sourcevol);
-                    System.out.println(destinationvol);
+            //System.out.println(sourcevol);
+            //System.out.println(destinationvol);
         }
-
-        System.out.println("dist tot:" + definitive.get(destinationAirport));
-
-
 
     }
 
